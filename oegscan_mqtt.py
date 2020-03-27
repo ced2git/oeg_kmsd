@@ -40,7 +40,6 @@ instrument.serial.timeout = 0.05	# seconds
 client = mqtt.Client(mqtt_clientname)
 client.connect(broker_address)
 
-## Read temperature (PV = ProcessValue) ##
 #localtime=time.asctime(time.localtime(time.time()))
 #file=open('chaudiere.csv', 'a')
 #writer= csv.writer(file)
