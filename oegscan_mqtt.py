@@ -49,7 +49,7 @@ for x in oeg_dict:
 		#print localtime
 		mqtt_topic = "oeg/" + oeg_dict[x]
 		#print mqtt_topic
-		client.publish(mqtt_topic,instrument.read_register(x,1,3))
+		client.publish(mqtt_topic,instrument.read_register(x,1,3,1))
 		#writer.writerow( (x, instrument.read_register (x,0,3),localtime))
 	except NoResponseError:
 		a=1
