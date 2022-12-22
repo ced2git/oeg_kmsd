@@ -81,17 +81,65 @@ case `decimals` should be set to 1, some others are enumerations, typically desc
 ##### Interesting registers for current data
 | Register | Description |
 | --- | --- |
-| 0-6 | Could be time. Register 0 definitely tracks seconds and when it reaches its maximum value, it resets to 0 and value of register 1 is incremented by 1 |
+| 0-5 | Could be time. Register 0 definitely tracks seconds and when it reaches its maximum value, it resets to 0 and value of register 1 is incremented by 1 |
+| 6 | Mode: 1=Off; 9=Automatic |
 | 13 | Set point temperature - Tank bottom |
 | 15 | Set point temperature - Tank top |
 | 29 | Language setting (2=French) |
 | 31 | Circulator R2 status: 0=OFF; 1=40%; 2=55%; 3=70%, 4=85%, 5=ON. Could possibly depend on how the circulator is controlled (RPM, ON/OFF, PWM), see setting S3.1 |
-| 34 | Circulators modes: 0 = R1 AUTO/R2 AUTO;  1 = R1 MANUAL/R2 AUTO; 2 = R1 AUTO/R2 MANUAL;  3 = R1 MANUAL/R2 MANUAL;|
-| 35 | Circulators ON/OFF: 0 = R1 OFF/R2 OFF;  1 = R1 ON/R2 OFF; 2 = R1 OFF/R2 ON;  3 = R1 ON/R2 ON;|
+| 34 | Circulators modes: see table below |
+| 35 | Circulators ON/OFF: see table below |
 | 38 | T1 |
 | 39 | T2 |
 | 40 | T3 |
 | 41 | T4 |
+| 58 | Circulators intensity |
+
+###### Circulators
+
+* Modes Auto/Manual
+
+    | Register 34 | R1 | R2 | R3 |
+    | --- | --- |--- | --- |
+    | 0 | AUTO | AUTO | AUTO | 
+    | 1 | MANUAL | AUTO | AUTO | 
+    | 2 | AUTO | MANUAL | AUTO | 
+    | 3 | MANUAL | MANUAL | AUTO | 
+    | 4 | AUTO | AUTO | MANUAL | 
+    | 5 | MANUAL | AUTO | MANUAL | 
+    | 6 | AUTO | MANUAL | MANUAL | 
+    | 7 | MANUAL | MANUAL | MANUAL | 
+
+* Status On/Off
+
+    | Register 35 | R1 | R2 | R3 |
+    | --- | --- |--- | --- |
+    | 0 | OFF | OFF | OFF | 
+    | 1 | ON | OFF | OFF | 
+    | 2 | OFF | ON | OFF | 
+    | 3 | ON | ON | OFF | 
+    | 4 | OFF | OFF | ON | 
+    | 5 | ON | OFF | ON | 
+    | 6 | OFF | ON | ON | 
+    | 7 | ON | ON | ON | 
+
+* Intensity
+
+  /!\ Presumably depends on the selected hydraulic scheme. The following appears to be true for scheme 236, with the two solar circulator pumps are managed in % of their total intensity.
+  
+  Intensity of both circulator pumps R2 and R3 can be read at register 58:
+
+    | Intensity R2 | R3 ON | R3 OFF |
+    | --- | --- | --- |
+    | R2 ON | {register 58} % 256 | {register 58} - 1280 |
+    | R2 OFF | 0 | 0 |
+
+    | Intensity R3 | R2 ON | R2 OFF |
+    | --- | --- | --- |
+    | R3 ON | {register 58} // 256 | {register 58} / 256 |
+    | R3 OFF | 0 | 0 |
+    
+    where // is the floor division and / the division
 
 ##### Settings
 Minimum and maximum values should probably not be written to.
