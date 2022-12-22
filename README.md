@@ -158,3 +158,70 @@ The whole range might not be in use if there are less than 20 settings in the se
 | F1 | 1540-1559 | 1140-1159 | 1740-1759 |
 | F2 | 1560-1579 | 1160-1179 | 1760-1779 |
 | F3? | 1580-1599 | 1180-1199 | 1780-1799 |
+
+The provided range represents all settings available in a section. 
+For example the current value of S1.1 is in 1000, S1.2 is in 1001, etc.
+
+##### Sending commands
+
+It seems possible to change the behavior remotely, by writing values to registers.
+
+With my current settings and hydraulic scheme, I can turn the system on and off by writing registers 6 to 23:
+
+* Turning off:
+
+```text
+Function: 16 (0x10) - Write Multiple Registers 
+    Starting Address: 6 
+    Quantity: 18 
+    Byte Count: 36 
+    Values: 00 01 00 00 00 00 00 00 00 00 00 78 01 f4 02 bc 01 f4 01 f4 01 f4 01 f4 ff ff ff ff ff ff ff ff ff ff ff ff  
+        Register6: 1 
+        Register7: 0 
+        Register8: 0 
+        Register9: 0 
+        Register10: 0 
+        Register11: 120 
+        Register12: 500 
+        Register13: 700 
+        Register14: 500 
+        Register15: 500 
+        Register16: 500 
+        Register17: 500 
+        Register18: 65535 
+        Register19: 65535 
+        Register20: 65535 
+        Register21: 65535 
+        Register22: 65535 
+        Register23: 65535 
+```
+
+* Turning on:
+
+```text
+Function: 16 (0x10) - Write Multiple Registers 
+    Starting Address: 6 
+    Quantity: 18 
+    Byte Count: 36 
+    Values: 00 09 00 00 00 00 00 00 00 00 00 78 01 f4 02 bc 01 f4 01 f4 01 f4 01 f4 ff ff ff ff ff ff ff ff ff ff ff ff  
+        Register6: 9 
+        Register7: 0 
+        Register8: 0 
+        Register9: 0 
+        Register10: 0 
+        Register11: 120 
+        Register12: 500 
+        Register13: 700 
+        Register14: 500 
+        Register15: 500 
+        Register16: 500 
+        Register17: 500 
+        Register18: 65535 
+        Register19: 65535 
+        Register20: 65535 
+        Register21: 65535 
+        Register22: 65535 
+        Register23: 65535 
+```
+
+The only value that is changed is register 6. Seeing as I don't know what the other registers represent, I can't tell if their values would be different on other installations.
